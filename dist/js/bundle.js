@@ -75,14 +75,24 @@ eval("\n\nmodule.exports = function (i) {\n  return i[1];\n};\n\n//# sourceURL=w
 
 /***/ }),
 
+/***/ "./src/js/index.js":
+/*!*************************!*\
+  !*** ./src/js/index.js ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css_index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/index.css */ \"./src/css/index.css\");\n/* harmony import */ var _css_index_less__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../css/index.less */ \"./src/css/index.less\");\n/* harmony import */ var _css_iconfont_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../css/iconfont.css */ \"./src/css/iconfont.css\");\n\n\n\n\nconst add = (a, b) => a + b;\n\n\n// eslint-disable-next-lint\nconsole.log(add(1, 3));\n\n\n//# sourceURL=webpack://webpack-learn/./src/js/index.js?");
+
+/***/ }),
+
 /***/ "./src/media/iconfont.ttf?t=1634175484057":
 /*!************************************************!*\
   !*** ./src/media/iconfont.ttf?t=1634175484057 ***!
   \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"media/cf68e7a274.ttf\");\n\n//# sourceURL=webpack://webpack-learn/./src/media/iconfont.ttf?");
+eval("module.exports = __webpack_require__.p + \"media/cf68e7a274.ttf\";\n\n//# sourceURL=webpack://webpack-learn/./src/media/iconfont.ttf?");
 
 /***/ }),
 
@@ -90,10 +100,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /*!**************************************************!*\
   !*** ./src/media/iconfont.woff2?t=1634175484057 ***!
   \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"media/42d317ddc2.woff2\");\n\n//# sourceURL=webpack://webpack-learn/./src/media/iconfont.woff2?");
+eval("module.exports = __webpack_require__.p + \"media/42d317ddc2.woff2\";\n\n//# sourceURL=webpack://webpack-learn/./src/media/iconfont.woff2?");
 
 /***/ }),
 
@@ -101,10 +110,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /*!*************************************************!*\
   !*** ./src/media/iconfont.woff?t=1634175484057 ***!
   \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"media/d61175dca9.woff\");\n\n//# sourceURL=webpack://webpack-learn/./src/media/iconfont.woff?");
+eval("module.exports = __webpack_require__.p + \"media/d61175dca9.woff\";\n\n//# sourceURL=webpack://webpack-learn/./src/media/iconfont.woff?");
 
 /***/ }),
 
@@ -214,17 +222,6 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 eval("module.exports = __webpack_require__.p + \"img/9b84ddcfb9.jpg\";\n\n//# sourceURL=webpack://webpack-learn/./src/img/1.jpg?");
-
-/***/ }),
-
-/***/ "./src/js/index.js":
-/*!*************************!*\
-  !*** ./src/js/index.js ***!
-  \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css_index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/index.css */ \"./src/css/index.css\");\n/* harmony import */ var _css_index_less__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../css/index.less */ \"./src/css/index.less\");\n/* harmony import */ var _css_iconfont_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../css/iconfont.css */ \"./src/css/iconfont.css\");\n\r\n\r\n\r\nlet add = (a, b) => {\r\n  return a + b;\r\n};\r\n\r\nconsole.log(add(1, 3));\r\n\n\n//# sourceURL=webpack://webpack-learn/./src/js/index.js?");
 
 /***/ })
 
