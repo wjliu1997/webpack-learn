@@ -3,6 +3,8 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 const commonCssLoader = [
   // //将js中的css提取为style标签
   // 'style-loader',
@@ -38,7 +40,7 @@ module.exports = {
 
   // 生产环境下,自动压缩js和html代码
   mode: 'production',
-  entry: path.join(__dirname, 'src', 'js', 'index'),
+  entry: [path.join(__dirname, 'src', 'js', 'index'), './src/index.html'],
   output: {
     path: path.join(__dirname, 'dist'),
     // publicPath: "/dist/",
@@ -156,10 +158,45 @@ module.exports = {
       filename: 'css/built.css',
     }),
     new CssMinimizerWebpackPlugin(),
+    // 清理打包文件
+    new CleanWebpackPlugin(),
   ],
   devServer: {
     port: 8080,
     open: true,
     compress: true,
+    /* HMR: hot module replacement 热模块替换,作用:一个模块发生变化,只会重新打包这个模块(而不是打包所有模块)
+
+    样式文件:可以使用HMR功能,style-loader内部实现了,只需设置hot:true
+    js文件:默认不能使用HMR功能 --> 需要修改js代码,添加支持HMR功能的代码
+    html文件:默认不能使用HMR功能,而且不能热更新(通过修改entry:[***,"./src/index.html"]解决热更新问题),不需要HMR功能
+    */
+    hot: true,
   },
+  // performance: {
+  //   maxEntrypointSize: 10000000,
+  //   maxAssetSize: 30000000,
+  // },
+
+  /**
+   * source-map:一种提供源代码到构建后代码映射技术(如果构建后代码出错了,方便追踪源代码错误)
+   * [inline-|hidden-|eval-][nosources-][cheap-[module-]]source-map
+   *
+   * source-map css,js外部
+   *     错误代码准确信息 和 源代码的错误位置
+   * inline-source-map css,js内联,只生成一个内联source-map
+   *      错误代码准确信息 和 源代码的错误位置
+   * hidden-source-map css,js外部
+   *       错误代码原因,没有错误位置,不能追踪到源代码位置
+   * eval-source-map 内联,在js生成对应的source-map,都在eval
+   *
+   *
+   * nosources-source-map css,js外部
+   * cheap-source-map 无变化?既没内联也没外部
+   * cheap-module-source-map css外部,js无变化?
+   *
+   *
+   * 内联和外部区别:1.外部生成了文件,内联没有,2.内联构建更快
+   */
+  devtool: 'eval-source-map',
 };
