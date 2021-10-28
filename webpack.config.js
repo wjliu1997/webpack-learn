@@ -5,6 +5,12 @@ const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+/**
+ * PWA:渐进式网络开发应用程序(离线可访问)
+ *  workbox --> workbox-webpack-plugin
+ */
+
 const commonCssLoader = [
   // //将js中的css提取为style标签
   // 'style-loader',
@@ -43,52 +49,19 @@ module.exports = {
   entry: [path.join(__dirname, 'src', 'js', 'index'), './src/index.html'],
   output: {
     path: path.join(__dirname, 'dist'),
-    // publicPath: "/dist/",
-    filename: 'js/bundle.js',
+
+    /**
+     * 文件资源缓存
+     * hash:每次webpack构建时会生成一个唯一的hash值
+     *  问题:由于js和css使用一个hash值,如果重新打包,会导致所有的缓存失效,即使只改动了一个文件,客户端会重新请求所有资源
+     * chunkhash:根据chunk生成的hash值,如果打包来源于同一个chunk,那么hash值就是一样的
+     *  问题:js和csshash还是一样的,因为css是在js中被引入的,所以同属于一个chunk
+     * contenthash:根据文件的内容生成hash值,不同文件的hash值不一样
+     */
+    filename: 'js/[name].[contenthash:10].js',
   },
   module: {
     rules: [
-      /*
-        正常来讲,一个文件只能被一个loader处理.
-        当一个文件要被多个loader处理,那么一定要指定loader执行的先后顺序:先执行eslint 在执行babel
-
-      */
-      {
-        /* js兼容性处理:babel-loader
-          1.基本js兼容性处理 -->@babel/preset-env(只可以处理基本的es6语法 无法处理promise)
-          2.全部js兼容性处理 -->@babel/polyfill(会引入所有兼容性处理代码,体积太大)
-          3.按需进行兼容性处理-->core-js
-        */
-
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          // 预设:指示babel做怎么样的兼容性处理
-          presets: [
-            [
-              '@babel/preset-env',
-              {
-                // 按需加载
-                useBuiltIns: 'usage',
-                // 指定core-js版本
-                corejs: {
-                  version: 2,
-                },
-                // 指定兼容性做到哪个版本浏览器
-                targets: {
-                  chrome: '60',
-                  firefox: '60',
-                  ie: '8',
-                  safari: '10',
-                  edge: '17',
-                },
-              },
-            ],
-          ],
-        },
-
-      },
       {
         /*
           语法检查
@@ -109,43 +82,94 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
-        use: [
-          ...commonCssLoader,
+        oneOf: [
+        // 一个文件只会被以下一个loader处理,提升构建速度,以免一个文件被多个loader处理
+        // 注意:不能有两个配置处理同一类型文件
+
+          /*
+        正常来讲,一个文件只能被一个loader处理.
+        当一个文件要被多个loader处理,那么一定要指定loader执行的先后顺序:先执行eslint 在执行babel
+          */
+          {
+          /* js兼容性处理:babel-loader
+            1.基本js兼容性处理 -->@babel/preset-env(只可以处理基本的es6语法 无法处理promise)
+            2.全部js兼容性处理 -->@babel/polyfill(会引入所有兼容性处理代码,体积太大)
+            3.按需进行兼容性处理-->core-js
+          */
+
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            options: {
+            // 预设:指示babel做怎么样的兼容性处理
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                  // 按需加载
+                    useBuiltIns: 'usage',
+                    // 指定core-js版本
+                    corejs: {
+                      version: 2,
+                    },
+                    // 指定兼容性做到哪个版本浏览器
+                    targets: {
+                      chrome: '60',
+                      firefox: '60',
+                      ie: '8',
+                      safari: '10',
+                      edge: '17',
+                    },
+                  },
+                ],
+              ],
+              // babel缓存,在第二次构建时,会读取之前的缓存,类似于HMR
+              cacheDirectory: true,
+            },
+
+          },
+
+          {
+            test: /\.css$/,
+            use: [
+              ...commonCssLoader,
+            ],
+          },
+          {
+            test: /\.less$/,
+            use: [
+              ...commonCssLoader,
+              'less-loader',
+            ],
+          },
+          {
+            test: /\.(jpg|png|gif)$/,
+            loader: 'url-loader',
+            options: {
+              limit: 8 * 1024,
+              name: '[hash:10].[ext]',
+              outputPath: 'img',
+              esModule: false,
+            },
+            type: 'javascript/auto',
+          },
+          {
+            test: /\.html$/,
+            loader: 'html-loader',
+          },
+          {
+            exclude: /\.(html|js|css|less|jpg|png|gif)/,
+            loader: 'file-loader',
+            options: {
+              name: '[hash:10].[ext]',
+              outputPath: 'media',
+              esModule: false,
+            },
+            type: 'javascript/auto',
+          },
         ],
       },
-      {
-        test: /\.less$/,
-        use: [
-          ...commonCssLoader,
-          'less-loader',
-        ],
-      },
-      {
-        test: /\.(jpg|png|gif)$/,
-        loader: 'url-loader',
-        options: {
-          limit: 8 * 1024,
-          name: '[hash:10].[ext]',
-          outputPath: 'img',
-          esModule: false,
-        },
-        type: 'javascript/auto',
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
-        exclude: /\.(html|js|css|less|jpg|png|gif)/,
-        loader: 'file-loader',
-        options: {
-          name: '[hash:10].[ext]',
-          outputPath: 'media',
-          esModule: false,
-        },
-        type: 'javascript/auto',
-      },
+
     ],
   },
 
@@ -155,11 +179,21 @@ module.exports = {
     }),
     // css提取到单独文件插件
     new MiniCssExtractPlugin({
-      filename: 'css/built.css',
+      filename: 'css/built.[contenthash:10].css',
     }),
     new CssMinimizerWebpackPlugin(),
     // 清理打包文件
     new CleanWebpackPlugin(),
+    new WorkboxWebpackPlugin.GenerateSW({
+      /**
+       * 1,帮助serviceworker快速启动
+       * 2,删除旧的serviceworker
+       *
+       * 生成一个servicework配置文件
+       */
+      clientsClaim: true,
+      skipWaiting: true,
+    }),
   ],
   devServer: {
     port: 8080,
@@ -173,10 +207,12 @@ module.exports = {
     */
     hot: true,
   },
-  // performance: {
-  //   maxEntrypointSize: 10000000,
-  //   maxAssetSize: 30000000,
-  // },
+
+  // 调整打包文件体积上限
+  performance: {
+    maxEntrypointSize: 10000000,
+    maxAssetSize: 30000000,
+  },
 
   /**
    * source-map:一种提供源代码到构建后代码映射技术(如果构建后代码出错了,方便追踪源代码错误)
@@ -187,16 +223,33 @@ module.exports = {
    * inline-source-map css,js内联,只生成一个内联source-map
    *      错误代码准确信息 和 源代码的错误位置
    * hidden-source-map css,js外部
-   *       错误代码原因,没有错误位置,不能追踪到源代码位置
+   *       错误代码原因,没有错误位置,不能追踪到源代码位置(只隐藏源代码,会提示构建后代码错误信息)
    * eval-source-map 内联,在js生成对应的source-map,都在eval
-   *
+   *       错误代码准确信息 和 源代码的错误位置,多了hash值
    *
    * nosources-source-map css,js外部
+   *       错误代码准确信息,但是没有任何源代码信息(隐藏源代码,不会提示构建后代码错误信息)
    * cheap-source-map 无变化?既没内联也没外部
+   *        错误代码准确信息 和 源代码的错误位置,但是只能精确到行(如把一行错误代码和一行正确代码写在一行中,会显示整行都是错误)
    * cheap-module-source-map css外部,js无变化?
+   *        modeul会将loader的source map加入
    *
    *
+   * 开发环境:速度快(eval>inline>cheap),调试友好
+   *    速度快: eval-cheap-source-map,eval-source-map
+   *    调试友好:source-map,cheap-module-source-map,cheap-source-map
+   *    推荐:eval-source-map
+   * 生产环境:源代码隐藏?调试要不要友好?内联会让代码体积变大,生产环境下不用内联
+   *    隐藏:nosources-source-map,hidden-source-map
+   *    推荐:source-map/cheap-module-source-map
    * 内联和外部区别:1.外部生成了文件,内联没有,2.内联构建更快
    */
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
+  // 1,可以将node_modules中代码单独打包成一个chunk最终输出,2,同时解决多入口文件重复import问题
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+
 };

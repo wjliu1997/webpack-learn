@@ -6,3 +6,6 @@
   display: flex;
   backface-visibility: hidden;
 }
+html {
+  background-color: white;
+}
